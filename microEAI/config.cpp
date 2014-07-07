@@ -1,7 +1,7 @@
 /*
- * configawk.cpp
+ * config.cpp
  *
- *  Created on: 31 mai 2014
+ *  Created on: 07 juillet 2014
  *      Author: Tondeur Herve
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -17,6 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 
 #include "config.h"
 #include <iostream>
