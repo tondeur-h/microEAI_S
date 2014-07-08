@@ -81,11 +81,12 @@ std::string config::read_config_string(const libconfig::Setting& root,std::strin
 	std::string ret_val;
 	  try
 	  {
-	    const libconfig::Setting &colors = root["tinyEAI"][group];
+	    const libconfig::Setting &colors = root["microEAI"][group];
 	    colors.lookupValue(field,ret_val);
 	  }
 	  catch(const libconfig::SettingNotFoundException &nfex)
 	  {
+		  std::cout<<"Erreur lecture..."<<std::endl;
 	   ret_val=default_value; //reset to normal, is the default value...
 	  }
 return ret_val;
@@ -102,7 +103,7 @@ int config::read_config_int(const libconfig::Setting& root,std::string group,std
 	int ret_val;
 	  try
 	  {
-	    const libconfig::Setting &colors = root["tinyEAI"][group];
+	    const libconfig::Setting &colors = root["microEAI"][group];
 	    colors.lookupValue(field,ret_val);
 	  }
 	  catch(const libconfig::SettingNotFoundException &nfex)
@@ -124,7 +125,7 @@ bool config::read_config_bool(const libconfig::Setting& root,std::string group,s
 	bool ret_val;
 	  try
 	  {
-	    const libconfig::Setting &colors = root["tinyEAI"][group];
+	    const libconfig::Setting &colors = root["microEAI"][group];
 	    colors.lookupValue(field,ret_val);
 	  }
 	  catch(const libconfig::SettingNotFoundException &nfex)

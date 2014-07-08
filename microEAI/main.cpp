@@ -34,18 +34,41 @@ using configSpace::config;
 #include <locale.h>
 
 config* cfgEAI;
+string ip;
+int port;
+bool mllp;
+string filepath;
+string fileext;
+
+
+/*!
+ *
+ *
+ */
 
 //reading config file for tinyEAI
 void readConfig(string pathConf){
-//get root from the config file
-const libconfig::Setting& root = cfgEAI->configSpace::config::cfg.getRoot();
+std::cout<<pathConf<<std::endl;
 
 cfgEAI=new config();
 //open config file
 cfgEAI->init_cfg(pathConf);
-//read ip destination
-cfgEAI->read_config_string(root,"socket","IP","127.0.0.1");
+//get root from the config file
+const libconfig::Setting& root = cfgEAI->configSpace::config::cfg.getRoot();
 
+//read ip destination
+ip=cfgEAI->read_config_string(root,"socket","ip","127.0.0.1");
+filepath=cfgEAI->read_config_string(root,"pathfile","path","/home/herve/hl7/");
+fileext=cfgEAI->read_config_string(root,"pathfile","ext","hl7");
+port=cfgEAI->read_config_int(root,"socket","port",4200);
+mllp=cfgEAI->read_config_bool(root,"socket","mllp",true);
+
+std::cout<<"ip: "<<ip<<std::endl;
+std::cout<<"port: "<<port<<std::endl;
+std::cout<<"mllp: "<<mllp<<std::endl;
+std::cout<<"path: "<<filepath<<std::endl;
+std::cout<<"ext: "<<fileext<<std::endl;
+delete cfgEAI;
 }
 
 
