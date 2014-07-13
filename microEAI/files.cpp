@@ -1,5 +1,5 @@
 /*
- * files.cpp
+  * files.cpp
  *
  *  Created on: 08 juillet 2014
  *      Author: Tondeur Herve
@@ -20,6 +20,9 @@
 
 
 #include "files.h"
+#include <string>
+
+using namespace std;
 
 
 namespace dirfile {
@@ -29,13 +32,19 @@ dirent*  dif;
 struct stat sf;
 std::string fullpath;
 
+
+
 files::files() {
 	// TODO Auto-generated constructor stub
 }
 
 bool files::verif_ext(std::string fp, std::string ext){
-std::string t=fp.substr((fp.length()-ext.length()),ext.length());
-if (t.compare(ext)==0){return true;}
+
+	int index=fp.find_last_of(ext);
+std::cout<<ext<<" "<<index<<" "<<fp<<std::endl;
+
+
+	if ((index!=std::string::npos) && (index>=(fp.length()-ext.length()))){return true;}
 	return false;
 }
 

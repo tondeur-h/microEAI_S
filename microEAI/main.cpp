@@ -23,6 +23,7 @@
 #include <iostream>
 using std::cout;
 using std::cin;
+#include <string>
 using std::string;
 
 //include config manager
@@ -60,18 +61,20 @@ const libconfig::Setting& root = cfgEAI->configSpace::config::cfg.getRoot();
 
 //read ip destination
 ip=cfgEAI->read_config_string(root,"socket","ip","127.0.0.1");
+
+
 filepath=cfgEAI->read_config_string(root,"pathfile","path","/home/herve");
 fileext=cfgEAI->read_config_string(root,"pathfile","ext","hl7");
 port=cfgEAI->read_config_int(root,"socket","port",4200);
 mllp=cfgEAI->read_config_bool(root,"socket","mllp",true);
 
-/*
+
 std::cout<<"ip: "<<ip<<std::endl;
 std::cout<<"port: "<<port<<std::endl;
 std::cout<<"mllp: "<<mllp<<std::endl;
 std::cout<<"path: "<<filepath<<std::endl;
 std::cout<<"ext: "<<fileext<<std::endl;
-*/
+
 
 delete cfgEAI;
 }

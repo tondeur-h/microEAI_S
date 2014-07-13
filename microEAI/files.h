@@ -36,7 +36,6 @@
 #include <iostream>
 #include <string>
 
-
 namespace dirfile {
 
 /*
