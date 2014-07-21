@@ -1,53 +1,59 @@
 /*
  * files.h
  *
- *  Created on: 08 juillet 2014
- *      Author: Tondeur Herve
- *
- *  This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *  Created on: 8 juil. 2014
+ *      Author: herve
  */
 
 #ifndef FILES_H_
 #define FILES_H_
 
-//c include
 #include <dirent.h>
 #include <sys/types.h>
-#include <unistd.h>
 #include <sys/stat.h>
-#include <time.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <errno.h>
+#include <unistd.h>
 
-
-//c++ include
-#include <iostream>
 #include <string>
+#include <iostream>
+#include <vector>
+#include <cstdio>
 
-namespace dirfile {
+
+namespace reading {
+
 
 /*
  *
  */
 class files {
+
 public:
+	struct fichier{
+	//std::string path;
+	std::string name;
+	int size;
+	timespec tdate;
+	};
+
+	std::string path;
+	static const int BYNAME=1;
+	static const int BYDATE=2;
+
 	files();
-	bool list_files(std::string path, std::string extension);
-	bool verif_ext (std::string fp,std::string ext);
+	std::vector<fichier>* list_vector();
+	int nb_files();
+	std::string name_file(int x);
+	std::string path_file();
+	std::string fullname_file(int x);
+	bool order_by(int type);
+	int size_file(int x);
+	long int* date_file(int x);
+	bool list_files(std::string path);
+	bool delete_file(std::string fichier);
+	bool mllp(std::string fichier);
 	virtual ~files();
 };
 
-} /* namespace dirfile */
+} /* namespace reading */
+
 #endif /* FILES_H_ */

@@ -21,101 +21,52 @@
 
 //include read and write console stream
 #include <iostream>
-using std::cout;
-using std::cin;
-#include <string>
-using std::string;
-
-//include config manager
-#include "config.h"
-using configSpace::config;
-
-//include gettext tranlation fonction.
-#include <libintl.h>
-#include <locale.h>
-
-//include files.h list files
 #include "files.h"
+#include <time.h>
+#include "socket.h"
 
 
-config* cfgEAI;
-string ip;
-int port;
-bool mllp;
-string filepath;
-string fileext;
-
-
-/*!
- *reading config file for microEAI
- *pathConf = fullpath of the file config file
- */
-void readConfig(string pathConf){
-//std::cout<<pathConf<<std::endl;
-
-cfgEAI=new config();
-//open config file
-cfgEAI->init_cfg(pathConf);
-//get root from the config file
-const libconfig::Setting& root = cfgEAI->configSpace::config::cfg.getRoot();
-
-//read ip destination
-ip=cfgEAI->read_config_string(root,"socket","ip","127.0.0.1");
-
-
-filepath=cfgEAI->read_config_string(root,"pathfile","path","/home/herve");
-fileext=cfgEAI->read_config_string(root,"pathfile","ext","hl7");
-port=cfgEAI->read_config_int(root,"socket","port",4200);
-mllp=cfgEAI->read_config_bool(root,"socket","mllp",true);
-
-
-std::cout<<"ip: "<<ip<<std::endl;
-std::cout<<"port: "<<port<<std::endl;
-std::cout<<"mllp: "<<mllp<<std::endl;
-std::cout<<"path: "<<filepath<<std::endl;
-std::cout<<"ext: "<<fileext<<std::endl;
-
-
-delete cfgEAI;
-}
-
-/*!
- * setTranslation function
- * set the gettext translation library on
- * no parameters
- */
-void setTranslation(){
-	setlocale( LC_ALL, "" );
-	bindtextdomain( "microEAI", "/usr/share/locale" );
-	textdomain( "microEAI" );
-}
-
+reading::files* f;
+network::net* n;
+const int port=1234;
+const std::string host="127.0.0.1";
 
 
 int main (int argc, char ** argv){
-//verif number of args
+f=new reading::files();
+n=new network::net();
 
-
-//translation with gettext
-setTranslation();
-
-//read config file...
-readConfig(argv[1]);
 
 //read list of files
-dirfile::files* f = new dirfile::files();
+f->list_files("/home/herve");
+f->order_by(f->BYDATE);
 
-f->list_files(filepath,fileext);
-delete f;
+//read file
+std::cout<<f->nb_files()<<std::endl;
 
-//read each file
-
+for (int i=0;i<f->nb_files();i++){
+//std::cout<<f->name_file(i)<<std::endl;
+//std::cout<<f->path_file()<<std::endl;
+//std::cout<<f->fullname_file(i)<<std::endl;
+//std::cout<<f->size_file(i)<<std::endl;
+//std::cout<<*f->date_file(i)<<std::endl;
+//std::cout<<ctime(f->date_file(i))<<std::endl;
 
 //wrap message for mllp format if needed
 
 
 //send to socket
 
+	f->mllp(f->fullname_file(i));
+if (n->sock(f->fullname_file(i),port,host)){
+	//delete file
+	f->delete_file(f->fullname_file(i));
+}
+
+}
+
+delete(f);
+delete(n);
 
 }
 

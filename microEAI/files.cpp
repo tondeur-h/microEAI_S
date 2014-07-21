@@ -1,84 +1,144 @@
 /*
-  * files.cpp
+ * files.cpp
  *
- *  Created on: 08 juillet 2014
- *      Author: Tondeur Herve
- *
- *  This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *  Created on: 8 juil. 2014
+ *      Author: herve
  */
 
-
 #include "files.h"
-#include <string>
-
-using namespace std;
 
 
-namespace dirfile {
+namespace reading {
 
-DIR* did;
-dirent*  dif;
+//structure for exploring directories
+DIR* dip;
+struct dirent* dit;
 struct stat sf;
-std::string fullpath;
 
+//structure for each file
+struct files::fichier afile;
 
+//vector exploit
+std::vector<files::fichier>* v_list_files;
 
+/*!
+ * Constructeur de la classe initialise le vecteur
+ */
 files::files() {
-	// TODO Auto-generated constructor stub
+   v_list_files=new std::vector<fichier>();
 }
 
-bool files::verif_ext(std::string fp, std::string ext){
 
-	int index=fp.find_last_of(ext);
-std::cout<<ext<<" "<<index<<" "<<fp<<std::endl;
+/*!
+ * Retourne le vecteur
+ */
+std::vector<files::fichier>* files::list_vector(){
+return v_list_files;
+}
+
+/*!
+ * taille du vecteur
+ */
+int files::nb_files(){
+	return v_list_files->size();
+}
+
+std::string files::path_file(){
+	return files::path;
+}
+
+std::string files::name_file(int pos){
+	if (pos>v_list_files->size()) return "-1";
+
+	return v_list_files->at(pos).name;
+}
+
+std::string files::fullname_file(int pos){
+	if (pos>v_list_files->size()) return "-1";
+	return path+"/"+v_list_files->at(pos).name;
+}
+
+long int* files::date_file(int pos){
+if (pos>v_list_files->size()) return NULL;
+return &v_list_files->at(pos).tdate.tv_sec;
+}
+
+int files::size_file(int pos){
+	if (pos>v_list_files->size()) return -1;
+	return v_list_files->at(pos).size;
+}
+
+/*!
+ * verifie si le fichier contient l'extension xxx
+ */
+bool verif_extension(std::string fp, std::string ext){
+if((fp.substr(fp.length()-ext.length(),ext.length())).compare(ext)==0){return true;} else{return false;}
+}
 
 
-	if ((index!=std::string::npos) && (index>=(fp.length()-ext.length()))){return true;}
+/*!
+ * lister tous les fichiers d'un répertoire YYYY
+ */
+bool files::list_files(std::string path){
+if ((dip=opendir(path.c_str()))== NULL){
 	return false;
 }
+chdir(path.c_str());
+this->path=path;
 
+while ((dit=readdir(dip))!=NULL){
 
-bool files::list_files(std::string path, std::string extension){
+	if (dit->d_type!=DT_DIR){
+		std::string chemin=path+"/"+std::string(dit->d_name);
 
-	//ouvrir le répertoire
-	if ((did=opendir(path.c_str()))==NULL){
-		return false;
-	}
+		if (stat(chemin.c_str(),&sf)==-1){
+			std::cout<<"Erreur lecture"<<std::endl;
+			return false;
+		} else
+		{
+			//si le fichier correspond à l'extension...
+			if (verif_extension(chemin,".hl7")){
+				afile.size=sf.st_size;
+				afile.name=std::string(dit->d_name);
+				afile.tdate=sf.st_mtim;
 
-	//pour chaque element si celui n'est pas un repertoire
-	while ((dif=readdir(did))!=NULL){
-		//si ce n'est pas un répertoire...
-		if (dif->d_type!=DT_DIR){
-			//garder le fichier
-			//convertir en un chemin complet
-			fullpath=path+"/"+std::string(dif->d_name);
-
-
-			//recuperer la date de derniere modification
-			if ((stat(fullpath.c_str(), &sf)!=-1) && (verif_ext(fullpath,extension))){
-				std::cout<<fullpath<<" # "<<&sf.st_mtim.tv_nsec<<std::endl;
+				v_list_files->push_back(afile);
+				//essayer de convertir tdate en t_time
 
 			}
-
 		}
+
 	}
+}
+//fermer le répertoire courant...
+closedir(dip);
 
 return true;
+}
+
+
+bool files::delete_file(std::string fichier){
+if (std::remove(fichier.c_str())==0){
+	return true;
+}
+//failed
+return false;
+}
+
+
+bool files::order_by(int type){
+
+	return true;
+}
+
+
+bool files::mllp(std::string fichier){
+
+	return true;
 }
 
 files::~files() {
 	// TODO Auto-generated destructor stub
 }
 
-} /* namespace pawk */
+} /* namespace reading */
