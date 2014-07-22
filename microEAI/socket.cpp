@@ -2,83 +2,54 @@
 
 using namespace network;
 
-
-/*!
- * error
- */
-void net::error(const char *msg)
-{
-    perror(msg);
-    exit(0);
-}
-
+char buffer[5242880];
 
 
 /*!
  *
  */
-bool net::sock(std::string file, int port, std::string host )
+bool net::sock(std::string file, int portno, std::string host )
 {
-    int sockfd, portno, n;
+    int sockfd, n;
     struct sockaddr_in serv_addr;
     struct hostent *server;
 
-    char buffer[256];
 
- /*
-    if (argc < 3) {
-       fprintf(stderr,"usage %s hostname port\n", argv[0]);
-       exit(0);
-    }
-*/
-    portno = port;
+    //creer la socket
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    if (sockfd < 0) return false;
 
-    if (sockfd < 0) error("ERROR opening socket");
 
+    //tester le nom de machine passé en paramétre
     server = gethostbyname(host.c_str());
+    if (server == NULL) return false;
 
-    if (server == NULL) {
-        fprintf(stderr,"ERROR, no such host\n");
-        exit(0);
-    }
 
+    //mettre à zero la structure sockaddr_in
     bzero((char *) &serv_addr, sizeof(serv_addr));
-
+    //type de famille réseau
     serv_addr.sin_family = AF_INET;
-
-    bcopy((char *)server->h_addr,
-         (char *)&serv_addr.sin_addr.s_addr,
-         server->h_length);
-
+   //copier ip vers sockaddr_in
+    bcopy((char *)server->h_addr,(char *)&serv_addr.sin_addr.s_addr,server->h_length);
+    //fixer le port
     serv_addr.sin_port = htons(portno);
 
-    if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0)
-        error("ERROR connecting");
+    //connecter la socket....
+    if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0) return false;
 
-    printf("Please enter the message: ");
+    //lire le contenu du fichier...
+    bzero(buffer,5242880);
 
-    bzero(buffer,256);
+    read_file(file);
 
-    fgets(buffer,255,stdin);
-
+    //ecrire sur la socket
     n = write(sockfd,buffer,strlen(buffer));
+    if (n < 0) return false;
 
-    if (n < 0)
-         error("ERROR writing to socket");
-
-    bzero(buffer,256);
-
-    n = read(sockfd,buffer,255);
-
-    if (n < 0)
-         error("ERROR reading from socket");
-
-    printf("%s\n",buffer);
-
+ //fermer la socket
     close(sockfd);
-
-    return 0;
+//tout est OK
+    return true;
 }
 
 /*!
@@ -88,6 +59,33 @@ net::net(){
 	//do nothing...
 }
 
+void net::read_file(std::string fichier){
+FILE* pfile;
+char c;
+int i=0;
+
+if (mllp){buffer[i]=0x0B;}
+
+pfile=fopen(fichier.c_str(),"r");
+
+if (pfile!=NULL){
+	do {
+	c=fgetc(pfile);
+	buffer[i++]=c;
+	} while (c!=EOF);
+
+if (mllp){buffer[i++]=0x1C;}
+
+	fclose(pfile);
+}
+
+
+}
+
+
+void net::setMLLP(bool mllp){
+	net::mllp=mllp;
+}
 
 /*!
  *

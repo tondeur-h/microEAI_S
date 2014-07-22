@@ -132,11 +132,6 @@ bool files::order_by(int type){
 }
 
 
-bool files::mllp(std::string fichier){
-
-	return true;
-}
-
 files::~files() {
 	// TODO Auto-generated destructor stub
 }

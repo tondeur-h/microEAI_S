@@ -50,7 +50,6 @@ public:
 	long int* date_file(int x);
 	bool list_files(std::string path);
 	bool delete_file(std::string fichier);
-	bool mllp(std::string fichier);
 	virtual ~files();
 };
 

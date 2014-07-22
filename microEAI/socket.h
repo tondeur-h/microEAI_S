@@ -8,8 +8,8 @@
 #ifndef SOCKET_H_
 #define SOCKET_H_
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <unistd.h>
 #include <string.h>
 #include <sys/types.h>
@@ -23,10 +23,13 @@ namespace network{
 
 class net{
 public:
+bool mllp;
+
 net();
 ~net();
-void error(const char *msg);
 bool sock(std::string fichier, int port, std::string host);
+void setMLLP(bool mllp);
+void read_file(std::string fichier);
 }; //end class
 
 } //end namespace

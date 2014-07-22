@@ -134,7 +134,8 @@ for (int i=0;i<f->nb_files();i++){
 
 //send to socket
 
-	f->mllp(f->fullname_file(i));
+	n->setMLLP(true);
+
 if (n->sock(f->fullname_file(i),port,host)){
 	//delete file
 	f->delete_file(f->fullname_file(i));
