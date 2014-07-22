@@ -20,19 +20,96 @@
 
 
 //include read and write console stream
-#include <iostream>
-#include "files.h"
 #include <time.h>
 #include "socket.h"
+
+//include read and write console stream
+#include <iostream>
+#include <string>
+
+//include config manager
+#include "config.h"
+using configSpace::config;
+
+//include gettext tranlation fonction.
+#include <libintl.h>
+#include <locale.h>
+
+//include files.h list files
+#include "files.h"
+
+
+config* cfgEAI;
+std::string ip;
+bool mllp;
+std::string filepath;
+std::string fileext;
 
 
 reading::files* f;
 network::net* n;
-const int port=1234;
+int port=1234;
 const std::string host="127.0.0.1";
 
 
+
+/*!
+ *reading config file for microEAI
+ *pathConf = fullpath of the file config file
+ */
+void readConfig(std::string pathConf){
+//std::cout<<pathConf<<std::endl;
+
+cfgEAI=new config();
+//open config file
+cfgEAI->init_cfg(pathConf);
+//get root from the config file
+const libconfig::Setting& root = cfgEAI->configSpace::config::cfg.getRoot();
+
+//read ip destination
+ip=cfgEAI->read_config_string(root,"socket","ip","127.0.0.1");
+
+
+filepath=cfgEAI->read_config_string(root,"pathfile","path","/home/herve");
+fileext=cfgEAI->read_config_string(root,"pathfile","ext","hl7");
+port=cfgEAI->read_config_int(root,"socket","port",4200);
+mllp=cfgEAI->read_config_bool(root,"socket","mllp",true);
+
+
+std::cout<<"ip: "<<ip<<std::endl;
+std::cout<<"port: "<<port<<std::endl;
+std::cout<<"mllp: "<<mllp<<std::endl;
+std::cout<<"path: "<<filepath<<std::endl;
+std::cout<<"ext: "<<fileext<<std::endl;
+
+
+delete cfgEAI;
+}
+
+
+/*!
+ * setTranslation function
+ * set the gettext translation library on
+ * no parameters
+ */
+void setTranslation(){
+	setlocale( LC_ALL, "" );
+	bindtextdomain( "microEAI", "/usr/share/locale" );
+	textdomain( "microEAI" );
+}
+
+
+
+
 int main (int argc, char ** argv){
+
+	//translation with gettext
+	setTranslation();
+
+	//read config file...
+	readConfig(argv[1]);
+
+
 f=new reading::files();
 n=new network::net();
 
