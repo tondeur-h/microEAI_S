@@ -79,7 +79,7 @@ if((fp.substr(fp.length()-ext.length(),ext.length())).compare(ext)==0){return tr
 /*!
  * lister tous les fichiers d'un répertoire YYYY
  */
-bool files::list_files(std::string path){
+bool files::list_files(std::string path, std::string extend){
 if ((dip=opendir(path.c_str()))== NULL){
 	return false;
 }
@@ -97,7 +97,7 @@ while ((dit=readdir(dip))!=NULL){
 		} else
 		{
 			//si le fichier correspond à l'extension...
-			if (verif_extension(chemin,".hl7")){
+			if (verif_extension(chemin,extend)){
 				afile.size=sf.st_size;
 				afile.name=std::string(dit->d_name);
 				afile.tdate=sf.st_mtim;

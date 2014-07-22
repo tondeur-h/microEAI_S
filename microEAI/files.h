@@ -48,7 +48,7 @@ public:
 	bool order_by(int type);
 	int size_file(int x);
 	long int* date_file(int x);
-	bool list_files(std::string path);
+	bool list_files(std::string path, std::string extend);
 	bool delete_file(std::string fichier);
 	virtual ~files();
 };

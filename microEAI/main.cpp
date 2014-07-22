@@ -76,11 +76,11 @@ port=cfgEAI->read_config_int(root,"socket","port",4200);
 mllp=cfgEAI->read_config_bool(root,"socket","mllp",true);
 
 
-std::cout<<"ip: "<<ip<<std::endl;
+/*std::cout<<"ip: "<<ip<<std::endl;
 std::cout<<"port: "<<port<<std::endl;
 std::cout<<"mllp: "<<mllp<<std::endl;
 std::cout<<"path: "<<filepath<<std::endl;
-std::cout<<"ext: "<<fileext<<std::endl;
+std::cout<<"ext: "<<fileext<<std::endl;*/
 
 
 delete cfgEAI;
@@ -115,7 +115,7 @@ n=new network::net();
 
 
 //read list of files
-f->list_files("/home/herve");
+f->list_files(filepath,fileext);
 f->order_by(f->BYDATE);
 
 //read file
@@ -134,7 +134,7 @@ for (int i=0;i<f->nb_files();i++){
 
 //send to socket
 
-	n->setMLLP(true);
+	n->setMLLP(mllp);
 
 if (n->sock(f->fullname_file(i),port,host)){
 	//delete file
