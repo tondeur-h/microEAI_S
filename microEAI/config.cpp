@@ -86,7 +86,7 @@ std::string config::read_config_string(const libconfig::Setting& root,std::strin
 	  }
 	  catch(const libconfig::SettingNotFoundException &nfex)
 	  {
-		  std::cout<<"Erreur lecture..."<<std::endl;
+		  //std::cout<<"Erreur lecture..."<<std::endl;
 	   ret_val=default_value; //reset to normal, is the default value...
 	  }
 return ret_val;

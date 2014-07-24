@@ -70,17 +70,17 @@ const libconfig::Setting& root = cfgEAI->configSpace::config::cfg.getRoot();
 ip=cfgEAI->read_config_string(root,"socket","ip","127.0.0.1");
 
 
-filepath=cfgEAI->read_config_string(root,"pathfile","path","/home/herve");
+filepath=cfgEAI->read_config_string(root,"pathfile","path",std::string(getenv("HOME")));
 fileext=cfgEAI->read_config_string(root,"pathfile","ext","hl7");
 port=cfgEAI->read_config_int(root,"socket","port",4200);
 mllp=cfgEAI->read_config_bool(root,"socket","mllp",true);
 
 
-/*std::cout<<"ip: "<<ip<<std::endl;
+std::cout<<"ip: "<<ip<<std::endl;
 std::cout<<"port: "<<port<<std::endl;
 std::cout<<"mllp: "<<mllp<<std::endl;
 std::cout<<"path: "<<filepath<<std::endl;
-std::cout<<"ext: "<<fileext<<std::endl;*/
+std::cout<<"ext: "<<fileext<<std::endl;
 
 
 delete cfgEAI;
@@ -99,15 +99,30 @@ void setTranslation(){
 }
 
 
+void syntaxe(){
+	std::cout<<"microEAI version 1.0\nCopyright Tondeur Hervé 2014"<<std::endl;
+	std::cout<<"\nmicroEAI configFile\n"<<std::endl;
+}
 
 
 int main (int argc, char ** argv){
+
+std::string pathcfgFile;
+
+	if (argc==1){
+		pathcfgFile=getenv("HOME")+std::string("/.microEAI.cfg");
+		std::cout<<"use default "+pathcfgFile+" file."<<std::endl;
+	}
+	else
+	{
+		pathcfgFile=argv[1];
+	}
 
 	//translation with gettext
 	setTranslation();
 
 	//read config file...
-	readConfig(argv[1]);
+	readConfig(pathcfgFile);
 
 
 f=new reading::files();
@@ -119,7 +134,7 @@ f->list_files(filepath,fileext);
 f->order_by(f->BYDATE);
 
 //read file
-std::cout<<f->nb_files()<<std::endl;
+std::cout<<f->nb_files()<<" file(s) found."<<std::endl;
 
 for (int i=0;i<f->nb_files();i++){
 //std::cout<<f->name_file(i)<<std::endl;

@@ -19,6 +19,9 @@ bool net::sock(std::string file, int portno, std::string host )
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd < 0) return false;
 
+    char* opt="1";
+
+    setsockopt(sockfd, SOL_SOCKET, SO_KEEPALIVE, &opt, sizeof(opt));
 
     //tester le nom de machine passé en paramétre
     server = gethostbyname(host.c_str());
