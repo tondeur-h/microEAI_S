@@ -8,7 +8,7 @@ char buffer[5242880];
 /*!
  *
  */
-bool net::sock(std::string file, int portno, std::string host )
+int net::sock(std::string file, int portno, std::string host )
 {
     int sockfd, n;
     struct sockaddr_in serv_addr;
@@ -17,16 +17,16 @@ bool net::sock(std::string file, int portno, std::string host )
 
     //creer la socket
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    if (sockfd < 0) return false;
+    //std::cout<<"FileDesc Socket : "<<sockfd<<std::endl;
+    if (sockfd < 0) return 1;
 
-    char* opt="1";
+    //char* opt="1";
 
-    setsockopt(sockfd, SOL_SOCKET, SO_KEEPALIVE, &opt, sizeof(opt));
+    //setsockopt(sockfd, SOL_SOCKET, SO_KEEPALIVE, &opt, sizeof(opt));
 
     //tester le nom de machine passé en paramétre
     server = gethostbyname(host.c_str());
-    if (server == NULL) return false;
-
+    if (server == NULL) return 2;
 
     //mettre à zero la structure sockaddr_in
     bzero((char *) &serv_addr, sizeof(serv_addr));
@@ -38,7 +38,8 @@ bool net::sock(std::string file, int portno, std::string host )
     serv_addr.sin_port = htons(portno);
 
     //connecter la socket....
-    if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0) return false;
+    if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0) return 3;
+    //std::cout<<"Connected to socket serveur..."<<std::endl;
 
     //lire le contenu du fichier...
     bzero(buffer,5242880);
@@ -47,12 +48,13 @@ bool net::sock(std::string file, int portno, std::string host )
 
     //ecrire sur la socket
     n = write(sockfd,buffer,strlen(buffer));
-    if (n < 0) return false;
+    std::cout<<file<<" # write :"<<n<<" bytes on socket => fd "<<sockfd<<" ip "<<server->h_name<<" port "<<portno<<std::endl;
+    if (n < 0) return 4;
 
  //fermer la socket
     close(sockfd);
 //tout est OK
-    return true;
+    return 0;
 }
 
 /*!
@@ -68,16 +70,18 @@ char c;
 int i=0;
 
 if (mllp){buffer[i]=0x0B;}
+i++;
 
 pfile=fopen(fichier.c_str(),"r");
 
 if (pfile!=NULL){
 	do {
 	c=fgetc(pfile);
-	buffer[i++]=c;
+	buffer[i]=c;
+	i++;
 	} while (c!=EOF);
 
-if (mllp){buffer[i++]=0x1C;}
+if (mllp){buffer[i]=0x1C;}
 
 	fclose(pfile);
 }

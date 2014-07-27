@@ -150,10 +150,17 @@ for (int i=0;i<f->nb_files();i++){
 //send to socket
 
 	n->setMLLP(mllp);
+int ce=-1;
 
-if (n->sock(f->fullname_file(i),port,host)){
+//n->sock(f->fullname_file(i),port,host);
+
+if ((ce=n->sock(f->fullname_file(i),port,host))==0){
 	//delete file
 	f->delete_file(f->fullname_file(i));
+}
+else
+{
+	std::cout<<"socket error : "<<ce<<std::endl;
 }
 
 }

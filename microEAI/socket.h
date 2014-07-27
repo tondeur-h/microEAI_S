@@ -18,6 +18,7 @@
 #include <netdb.h>
 
 #include <string>
+#include <iostream>
 
 namespace network{
 
@@ -27,7 +28,7 @@ bool mllp;
 
 net();
 ~net();
-bool sock(std::string fichier, int port, std::string host);
+int sock(std::string fichier, int port, std::string host);
 void setMLLP(bool mllp);
 void read_file(std::string fichier);
 }; //end class
