@@ -16,6 +16,7 @@
 #include <linux/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include <sys/time.h>
 
 #include <string>
 #include <iostream>
@@ -30,7 +31,7 @@ net();
 ~net();
 int sock(std::string fichier, int port, std::string host);
 void setMLLP(bool mllp);
-void read_file(std::string fichier);
+long read_file(std::string fichier);
 }; //end class
 
 } //end namespace

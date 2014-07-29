@@ -3,6 +3,7 @@
 using namespace network;
 
 char buffer[5242880];
+timeval t;
 
 
 /*!
@@ -44,11 +45,13 @@ int net::sock(std::string file, int portno, std::string host )
     //lire le contenu du fichier...
     bzero(buffer,5242880);
 
-    read_file(file);
+    long nbr=read_file(file);
 
     //ecrire sur la socket
-    n = write(sockfd,buffer,strlen(buffer));
-    std::cout<<file<<" # write :"<<n<<" bytes on socket => fd "<<sockfd<<" ip "<<server->h_name<<" port "<<portno<<std::endl;
+    n = write(sockfd,buffer,nbr);
+
+    gettimeofday(&t,NULL);
+    std::cout<<t.tv_usec<<": "<<file<<" # write :"<<n<<" bytes on socket => fd "<<sockfd<<" ip "<<server->h_name<<" port "<<portno<<std::endl;
     if (n < 0) return 4;
 
  //fermer la socket
@@ -64,13 +67,13 @@ net::net(){
 	//do nothing...
 }
 
-void net::read_file(std::string fichier){
+long net::read_file(std::string fichier){
 FILE* pfile;
 char c;
 int i=0;
 
-if (mllp){buffer[i]=0x0B;}
-i++;
+if (mllp){buffer[i]=0x0B;i++;}
+
 
 pfile=fopen(fichier.c_str(),"r");
 
@@ -86,7 +89,7 @@ if (mllp){buffer[i]=0x1C;}
 	fclose(pfile);
 }
 
-
+return i-1;
 }
 
 
